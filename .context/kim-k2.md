@@ -799,7 +799,7 @@ lint:
 How to run
 --------------------------------------------------
 1. Install etcd locally or use docker:  
-   `docker run -d --name etcd -p 2379:2379 quay.io/coreos/etcd:v3.5.10 etcd`
+   `docker run -d --name etcd -p 2379:2379 quay.io/coreos/etcd:v3.6.4 etcd`
 
 2. `make build && ./bin/server`  
    Server listens on `:8080`  

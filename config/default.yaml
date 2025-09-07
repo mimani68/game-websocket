@@ -1,0 +1,10 @@
+server:
+  port: 8080
+
+etcd:
+  endpoints:
+    - "localhost:2379"
+  dial_timeout_seconds: 5
+
+log:
+  level: "debug"
