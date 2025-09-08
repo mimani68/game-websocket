@@ -1,37 +1,33 @@
 package validator
 
 import (
+	"app/core-game/constants"
+	customError "app/core-game/internal/error"
 	"errors"
 	"regexp"
 )
 
-var (
-	ErrInvalidNamespace = errors.New("invalid namespace")
-	ErrInvalidEventType = errors.New("invalid event type")
-	ErrEmptyID          = errors.New("id cannot be empty")
-)
-
 func ValidateNamespace(ns string) error {
-	if ns != "private" && ns != "guest" {
-		return ErrInvalidNamespace
+	if ns != string(constants.KiakoV1) {
+		return customError.ErrInvalidNamespace
 	}
 	return nil
 }
 
 func ValidateEventType(et string) error {
 	switch et {
-	case "core.game.state.broadcast",
-		"core.game.state.send_message",
-		"core.game.state.buy_good":
+	case string(constants.EventTypeBroadcast),
+		string(constants.EventTypeSendMsg),
+		string(constants.EventTypeBuyGood):
 		return nil
 	default:
-		return ErrInvalidEventType
+		return customError.ErrInvalidEventType
 	}
 }
 
 func ValidateID(id string) error {
 	if id == "" {
-		return ErrEmptyID
+		return customError.ErrEmptyID
 	}
 	// Optionally validate UUID format
 	// Simple regex UUID v4 check

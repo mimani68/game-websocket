@@ -3,6 +3,7 @@ package game
 import (
 	"app/core-game/constants"
 	"app/core-game/internal/domain/entity"
+	customError "app/core-game/internal/error"
 
 	"go.uber.org/zap"
 )
@@ -94,12 +95,12 @@ func (eh *EventHandlers) handleBuyGood(event *entity.Event) {
 func extractTargetIDs(payload map[string]interface{}) ([]string, error) {
 	targetIDsRaw, ok := payload["target_ids"]
 	if !ok {
-		return nil, ErrInvalidTargetIDs
+		return nil, customError.ErrInvalidTargetIDs
 	}
 
 	targetIDsInterface, ok := targetIDsRaw.([]interface{})
 	if !ok {
-		return nil, ErrInvalidTargetIDs
+		return nil, customError.ErrInvalidTargetIDs
 	}
 
 	var targetIDs []string

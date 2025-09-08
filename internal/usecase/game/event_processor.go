@@ -5,6 +5,7 @@ import (
 
 	"app/core-game/internal/domain/entity"
 	"app/core-game/internal/domain/repository"
+	customError "app/core-game/internal/error"
 
 	"go.uber.org/zap"
 )
@@ -46,7 +47,7 @@ func (ep *EventProcessor) SaveAndQueueEvent(ctx context.Context, event *entity.E
 		return nil
 	default:
 		ep.logger.Warn("event channel full, dropping event", zap.String("event_id", event.ID))
-		return ErrEventChannelFull
+		return customError.ErrEventChannelFull
 	}
 }
 
