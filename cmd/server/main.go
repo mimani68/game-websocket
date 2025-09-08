@@ -13,7 +13,7 @@ import (
 	"app/core-game/internal/delivery/socket"
 	"app/core-game/internal/infrastructure/etcd"
 	"app/core-game/internal/infrastructure/logger"
-	"app/core-game/internal/usecase"
+	"app/core-game/internal/usecase/game"
 
 	"go.uber.org/zap"
 )
@@ -43,7 +43,7 @@ func main() {
 	connRepo := etcd.NewConnectionRepo(etcdCli)
 	eventRepo := etcd.NewEventRepo(etcdCli)
 
-	gameUC := usecase.NewGameUseCase(connRepo, eventRepo, log)
+	gameUC := game.NewGameUseCase(connRepo, eventRepo, log)
 
 	socketRegistry := socket.NewSocketRegistry(gameUC, log)
 

@@ -1,26 +1,19 @@
 package entity
 
 import (
+	"app/core-game/constants"
 	"time"
-)
-
-type EventType string
-
-const (
-	EventTypeBroadcast EventType = "core.game.state.broadcast"
-	EventTypeSendMsg   EventType = "core.game.state.send_message"
-	EventTypeBuyGood   EventType = "core.game.state.buy_good"
 )
 
 type Event struct {
 	ID        string
-	Type      EventType
-	Namespace Namespace
+	Type      constants.EventType
+	Namespace constants.Namespace
 	Payload   map[string]interface{}
 	CreatedAt time.Time
 }
 
-func NewEvent(id string, eventType EventType, ns Namespace, payload map[string]interface{}) *Event {
+func NewEvent(id string, eventType constants.EventType, ns constants.Namespace, payload map[string]interface{}) *Event {
 	return &Event{
 		ID:        id,
 		Type:      eventType,

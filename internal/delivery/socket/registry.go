@@ -3,7 +3,8 @@ package socket
 import (
 	"net/http"
 
-	"app/core-game/internal/usecase"
+	"app/core-game/constants"
+	"app/core-game/internal/usecase/game"
 
 	"go.uber.org/zap"
 )
@@ -12,7 +13,7 @@ type SocketRegistry struct {
 	handler *SocketHandler
 }
 
-func NewSocketRegistry(gameUC usecase.GameUseCase, logger *zap.Logger) *SocketRegistry {
+func NewSocketRegistry(gameUC game.GameUseCase, logger *zap.Logger) *SocketRegistry {
 	return &SocketRegistry{
 		handler: NewSocketHandler(gameUC, logger),
 	}
@@ -20,6 +21,5 @@ func NewSocketRegistry(gameUC usecase.GameUseCase, logger *zap.Logger) *SocketRe
 
 func (r *SocketRegistry) RegisterRoutes(mux *http.ServeMux) {
 	// Register websocket handlers for both namespaces
-	mux.Handle("/core/game/v1/real-time/private", r.handler)
-	mux.Handle("/core/game/v1/real-time/guest", r.handler)
+	mux.Handle(string(constants.KiakoV1), r.handler)
 }

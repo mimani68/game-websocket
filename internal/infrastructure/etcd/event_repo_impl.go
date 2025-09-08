@@ -7,6 +7,7 @@ import (
 
 	clientv3 "go.etcd.io/etcd/client/v3"
 
+	"app/core-game/constants"
 	"app/core-game/internal/domain/entity"
 	"app/core-game/internal/domain/repository"
 )
@@ -46,7 +47,7 @@ func (r *EventRepoImpl) GetByID(ctx context.Context, id string) (*entity.Event, 
 	return &event, nil
 }
 
-func (r *EventRepoImpl) ListByNamespace(ctx context.Context, ns entity.Namespace) ([]*entity.Event, error) {
+func (r *EventRepoImpl) ListByNamespace(ctx context.Context, ns constants.Namespace) ([]*entity.Event, error) {
 	resp, err := r.etcd.client.Get(ctx, eventPrefix, clientv3.WithPrefix())
 	if err != nil {
 		return nil, err

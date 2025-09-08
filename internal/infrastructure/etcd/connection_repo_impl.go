@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"app/core-game/constants"
 	"app/core-game/internal/domain/entity"
 	"app/core-game/internal/domain/repository"
 
@@ -52,7 +53,7 @@ func (r *ConnectionRepoImpl) GetByID(ctx context.Context, id string) (*entity.Co
 	return &conn, nil
 }
 
-func (r *ConnectionRepoImpl) ListByNamespace(ctx context.Context, ns entity.Namespace) ([]*entity.Connection, error) {
+func (r *ConnectionRepoImpl) ListByNamespace(ctx context.Context, ns constants.Namespace) ([]*entity.Connection, error) {
 	resp, err := r.etcd.client.Get(ctx, connectionPrefix, clientv3.WithPrefix())
 	if err != nil {
 		return nil, err

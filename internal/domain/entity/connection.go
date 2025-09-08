@@ -1,22 +1,15 @@
 package entity
 
 import (
+	"app/core-game/constants"
 	"sync"
 	"time"
-)
-
-// Namespace type for connection namespace
-type Namespace string
-
-const (
-	NamespacePrivate Namespace = "private"
-	NamespaceGuest   Namespace = "guest"
 )
 
 // Connection represents a client socket connection
 type Connection struct {
 	ID        string
-	Namespace Namespace
+	Namespace constants.Namespace
 	CreatedAt time.Time
 	// Add more metadata if needed
 	mu sync.RWMutex
@@ -24,7 +17,7 @@ type Connection struct {
 	State map[string]interface{}
 }
 
-func NewConnection(id string, namespace Namespace) *Connection {
+func NewConnection(id string, namespace constants.Namespace) *Connection {
 	return &Connection{
 		ID:        id,
 		Namespace: namespace,

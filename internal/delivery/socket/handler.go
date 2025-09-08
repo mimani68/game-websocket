@@ -9,9 +9,10 @@ import (
 	"strings"
 	"sync"
 
-	"app/core-game/internal/domain/entity"
+	"app/core-game/constants"
+	"app/core-game/internal/dto"
 	"app/core-game/internal/pkg/validator"
-	"app/core-game/internal/usecase"
+	"app/core-game/internal/usecase/game"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
@@ -23,14 +24,14 @@ var upgrader = websocket.Upgrader{
 }
 
 type SocketHandler struct {
-	gameUseCase usecase.GameUseCase
+	gameUseCase game.GameUseCase
 	logger      *zap.Logger
 
 	// Map connection ID to websocket connection
 	connections sync.Map // map[string]*websocket.Conn
 }
 
-func NewSocketHandler(gameUC usecase.GameUseCase, logger *zap.Logger) *SocketHandler {
+func NewSocketHandler(gameUC game.GameUseCase, logger *zap.Logger) *SocketHandler {
 	return &SocketHandler{
 		gameUseCase: gameUC,
 		logger:      logger,
@@ -57,7 +58,7 @@ func (h *SocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if connID == "" {
 		connID = generateConnectionID()
 	}
-	connEntity, err := h.gameUseCase.RegisterConnection(r.Context(), usecase.ConnectionDTO{
+	connEntity, err := h.gameUseCase.RegisterConnection(r.Context(), dto.ConnectionDTO{
 		ID:        connID,
 		Namespace: ns,
 	})
@@ -87,7 +88,7 @@ func (h *SocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Handle incoming message as event
-		var evt usecase.EventDTO
+		var evt dto.EventDTO
 		if err := json.Unmarshal(msg, &evt); err != nil {
 			h.logger.Warn("invalid message format", zap.Error(err), zap.String("conn_id", connID))
 			continue
@@ -107,7 +108,7 @@ func (h *SocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		evt.Namespace = ns
 
 		// Process event async
-		go func(e usecase.EventDTO) {
+		go func(e dto.EventDTO) {
 			if err := h.gameUseCase.HandleEvent(context.Background(), e); err != nil {
 				h.logger.Error("failed to handle event", zap.Error(err), zap.String("conn_id", connID))
 			}
@@ -115,17 +116,17 @@ func (h *SocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *SocketHandler) extractNamespace(path string) (entity.Namespace, error) {
-	// Expected path: /core/game/v1/real-time/{private|guest}
+func (h *SocketHandler) extractNamespace(path string) (constants.Namespace, error) {
+	// Expected path:  /core/real-time/game/kiako/v1
 	parts := strings.Split(path, "/")
 	if len(parts) < 6 {
 		return "", errors.New("invalid path")
 	}
-	ns := parts[5]
-	if ns != string(entity.NamespacePrivate) && ns != string(entity.NamespaceGuest) {
+	ns := parts[4]
+	if ns != string(constants.NamespacePrivate) && ns != string(constants.NamespaceGuest) {
 		return "", errors.New("invalid namespace")
 	}
-	return entity.Namespace(ns), nil
+	return constants.Namespace(ns), nil
 }
 
 func generateConnectionID() string {

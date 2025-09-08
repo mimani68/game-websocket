@@ -35,6 +35,7 @@ Criteria
 6- No hard coded configuration
 7- Clean architecture must be implement (the Domain layer (core business entities), the Use Case/Service layer (business logic), the Repository/Storage layer (data access interfaces), and the Controller/Delivery layer (external interfaces like HTTP handlers))
 8- Interface-based design for repositories and use cases
+9- All constant and static variables have to be store in single file
 
 Error handling
 1- Strong error handling must be design
@@ -47,6 +48,10 @@ Directory tree first, then every file listed in full.
 ├── cmd
 │   └── server
 │       └── main.go
+├── constants
+│   ├── system.go
+│   ├── namespace.go
+│   └── game.go
 ├── config
 │   ├── config.go
 │   └── default.yaml
